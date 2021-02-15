@@ -52,7 +52,7 @@ function App() {
         }
         setSearchResults(newResults)
     }
-    // Test
+    
     return (
         <React.Fragment>
             <InfoModal showModal={showModal} toggleModal={toggleModal} specificInfo={specificInfo} loading={loading} />
