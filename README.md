@@ -2,6 +2,8 @@
 
 With this application you can earch for movies, series, and episodes.
 
+![Alt text](/Demo.png?raw=true "Demo Image")
+
 This is an example project that fulfills requirements bellow:
 
 ## Tasks:
