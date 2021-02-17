@@ -5,9 +5,12 @@ import React from 'react'
 import Styles from '../Styles' 
 import Button from './Button'
 import loading from '../loading.png'
+import { connect, useDispatch } from 'react-redux'
 
-export default function InfoModal(props:any) {
+const InfoModal = (props:any) => {
+    console.log(props)
     const info = props.specificInfo
+    const dispatch = useDispatch()
     console.log(info)
     if (props.showModal) return <div css={Styles.modal}>
         <div css={[Styles.text, Styles.modalContent, ]}>
@@ -15,7 +18,7 @@ export default function InfoModal(props:any) {
 
             
             <div css={Styles.flexRow}>
-                {info.Poster !== "N/A" && <img style={{maxHeight: ""}} src={info.Poster} alt="poster" />}
+                {info.Poster && info.Poster !== ("N/A") && <img style={{maxHeight: ""}} src={info.Poster} alt="poster" />}
                 <div css={css({
                     padding: "20px"
                 })}>
@@ -38,10 +41,19 @@ export default function InfoModal(props:any) {
                 top: "10px",
                 right: "10px",
             })} onClick={() => {
-                props.toggleModal((prev:boolean) => !prev)
+                // props.toggleModal((prev:boolean) => !prev)
+                dispatch({type: "toggleModal"})
             }} />
             
         </div>
     </div>
     return null
 }
+
+const mapStateToProps = (state:any) => ({
+    specificInfo: state.specificInfo,
+    showModal: state.showModal,
+    loading: state.loading,
+})
+
+export default connect(mapStateToProps)(InfoModal)

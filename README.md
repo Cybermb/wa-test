@@ -13,6 +13,13 @@ This is an example project that fulfills requirements bellow:
 3. Create a drop down menu for filter
 4. Clicking on a row must open modal with the info
 
+Redux Update
+
+5. Implement Redux
+6. Add a Store in App.tsx
+7. Create a reducer that saves a list over fetched search results
+8. Results that are shown to user should be taken from a reducer
+
 ## Technical requirements:
 
 1. Create project with create-react-app (CRA) and TS preset
