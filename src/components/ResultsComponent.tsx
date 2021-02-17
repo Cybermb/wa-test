@@ -5,27 +5,32 @@ import React from 'react'
 import searchSpecific from '../functions/searchSpecific'
 import Styles from '../Styles' 
 import loading from '../loading.png'
-import { connect, useDispatch } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import sortResults from '../functions/sortResults'
 
-
-
-// export default function SearchComponent(props:any) {
+const mapStateToProps = (state:any) => ({
+    sort: state.sort,
+    results: state.results,
+    loading: state.loading,
+    showModal: state.showModal,
+    specificInfo: state.specificInfo,
+})
 
 const SearchComponent = (props:any) => {
-    // const searchResults = results
-    
     const searchResults = props.results
-    console.log(props)
     if (searchResults?.length > 0) return (
         <React.Fragment>
             <h2 css={Styles.title}>
                 Results:
             </h2>
             <table css={Styles.resultTable} >
-                <TableHeader sort={props.sort} results={searchResults}/>
-                {/* <TableHeader {...props} /> */}
-                {searchResults.map((result:any, index:number) => <Results key={index} result={result} {...props}/>)}
+                <thead>
+                    <TableHeader sort={props.sort} results={searchResults}/>
+                </thead>
+                <tbody>
+                    {searchResults.map((result:any, index:number) => <Results key={index} result={result} {...props}/>)}
+                </tbody>
+                
             </table>
         </React.Fragment>
     )
@@ -33,14 +38,24 @@ const SearchComponent = (props:any) => {
     return null
 }
 
-const mapStateToProps = (state:any) => ({
-    sort: state.sort,
-    results: state.results,
-    loading: state.loading,
-    showModal: state.showModal,
-})
-
 export default connect(mapStateToProps)(SearchComponent)
+
+const loadModal = async (specificInfo:any, dispatch:Function, imdbID:string) => {
+    dispatch({
+        type: "toggleModal", 
+        payload: imdbID,
+    })
+    if (specificInfo[imdbID]) return
+    dispatch({type: "toggleLoading"})
+    const specificResult = await searchSpecific(imdbID)
+    const newSpecificInfoList = {...specificInfo}
+    newSpecificInfoList[imdbID] = specificResult
+    dispatch({
+        type: "updateState",
+        payload: {specificInfo: newSpecificInfoList}
+    })
+    dispatch({type: "toggleLoading"})
+}
 
 const TableHeader = (props:any) => {
     const sort = props.sort
@@ -49,8 +64,6 @@ const TableHeader = (props:any) => {
     const dispatch = useDispatch()
     const updateSort = (sortType:string) => {
         if (sortBy === sortType) {
-            // setSort([sortBy, (sortDir === "des" ? "asc" : "des")])
-            // sortResults([sortBy, (sortDir === "des" ? "asc" : "des")])
             dispatch({
                 type: "updateState",
                 payload: {
@@ -59,9 +72,6 @@ const TableHeader = (props:any) => {
                 }
             })
         } else {
-            // setSort([sortType, "des"])
-            // sortResults([sortType, "des"])
-            
             dispatch({
                 type: "updateState",
                 payload: {
@@ -72,7 +82,6 @@ const TableHeader = (props:any) => {
         }
     }
 
-    // const dispatch = useDispatch(function)
     return (
         <tr css={[Styles.title, Styles.tableHeader]}>
             <th>Poster</th>
@@ -91,45 +100,11 @@ const TableHeader = (props:any) => {
 
 const Results = (props:any) => {
     const result = props.result
-    // const toggleLoading = props.toggleLoading
-    // const toggleModal = props.toggleModal
-    // const setSpecificInfo = props.setSpecificInfo
-
+    const imdbID = result.imdbID
+    const specificInfo = useSelector((state:any) => state.specificInfo)
     const dispatch = useDispatch()
-    return <tr css={Styles.tableRow} onClick={async () => {
-        console.log(!props.loading)
-        dispatch({type: "toggleModal"})
-        dispatch({type: "toggleLoading"})
-        // dispatch({
-        //     type: "updateState",
-        //     paylaod: {
-        //         specificInfo: {},
-        //     }
-        // })
-        const specificResult = await searchSpecific(result.imdbID)
-        console.log(specificResult)
-        dispatch({type: "toggleLoading"})
-        dispatch({
-            type: "updateState",
-            paylaod: {
-                specificInfo: specificResult,
-            }
-        })
-        // dispatch({
-        //     type: "updateState",
-        //     paylaod: {
-        //         loading: !props.loading,
-        //         specificInfo: specificResult,
-        //     }
-        // })
-        // console.log(props)
-        // toggleModal((prev:boolean) => !prev)
-        // toggleLoading((prev:boolean) => !prev)
-        // setSpecificInfo({})
-        // const specificResult = await searchSpecific(result.imdbID)
-        // setSpecificInfo(specificResult)
-        // toggleLoading((prev:boolean) => !prev)
-    }}>
+    
+    return <tr css={Styles.tableRow} onClick={async () => loadModal(specificInfo, dispatch, imdbID)}>
         <td css={Styles.tablePoster}>
             {result.Poster !== "N/A" ? <img src={result.Poster} alt="poster"/> : "N/A"}
         </td>

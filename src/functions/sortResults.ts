@@ -14,7 +14,6 @@ const sortResults = (searchResults:Array<any>, type:Array<string>) => {
         })
     }
     return sortedResults
-    // setSearchResults(newResults)
 }
 
 export default sortResults

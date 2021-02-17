@@ -1,23 +1,22 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react'
-import React from 'react'
 import Styles from '../Styles' 
 import Button from './Button'
-import loading from '../loading.png'
-import { connect, useDispatch } from 'react-redux'
+import loadingPNG from '../loading.png'
+import { useDispatch, useSelector } from 'react-redux'
 
 const InfoModal = (props:any) => {
-    console.log(props)
-    const info = props.specificInfo
+    const modalInfoID = useSelector((state:any) => state.modalInfoID)
+    const specificInfo = useSelector((state:any) => state.specificInfo)
+    const info = specificInfo[modalInfoID]
+    const showModal = useSelector((state:any) => state.showModal)
+    const loading = useSelector((state:any) => state.loading)
     const dispatch = useDispatch()
-    console.log(info)
-    if (props.showModal) return <div css={Styles.modal}>
+    if (showModal) return <div css={Styles.modal}>
         <div css={[Styles.text, Styles.modalContent, ]}>
-            {props.loading && <img css={Styles.loading} src={loading} alt={"Loading indicator"} />}
-
-            
-            <div css={Styles.flexRow}>
+            {loading && <img css={Styles.loading} src={loadingPNG} alt={"Loading indicator"} />}
+            {info && <div css={Styles.flexRow}>
                 {info.Poster && info.Poster !== ("N/A") && <img style={{maxHeight: ""}} src={info.Poster} alt="poster" />}
                 <div css={css({
                     padding: "20px"
@@ -25,23 +24,22 @@ const InfoModal = (props:any) => {
                     {Object.entries(info).map(([key, val]) => {
                         const value:any = val
                         if (key === "Poster"  || val === "N/A") return null
-                        if (key === "Ratings") return <div style={{padding: 0}}>
+                        if (key === "Ratings") return <div key={key} style={{padding: 0}}>
                             <p><b>{key}:</b></p>
-                            {value.map((rating:any) => {
-                                return <p style={{paddingLeft: "15px"}} ><b>{rating.Source}: </b>{rating.Value}</p>
+                            {value.map((rating:any, index:number) => {
+                                return <p key={index} style={{paddingLeft: "15px"}} ><b>{rating.Source}: </b>{rating.Value}</p>
                             })}
                         </div>
                         
-                        return <p><b>{key}: </b>{val}</p>
+                        return <p key={key}><b>{key}: </b>{val}</p>
                     })}
                 </div>
-            </div>
+            </div>}
             <Button text="Close" css={css({
                 position: "absolute",
                 top: "10px",
                 right: "10px",
             })} onClick={() => {
-                // props.toggleModal((prev:boolean) => !prev)
                 dispatch({type: "toggleModal"})
             }} />
             
@@ -50,10 +48,4 @@ const InfoModal = (props:any) => {
     return null
 }
 
-const mapStateToProps = (state:any) => ({
-    specificInfo: state.specificInfo,
-    showModal: state.showModal,
-    loading: state.loading,
-})
-
-export default connect(mapStateToProps)(InfoModal)
+export default InfoModal
