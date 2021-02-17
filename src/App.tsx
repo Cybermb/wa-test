@@ -4,7 +4,6 @@ import React from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
 
-// import './App.css'
 import Font from './Font'
 import Styles from './Styles'
 import Divider from './components/Divider'
@@ -12,7 +11,6 @@ import APIField from './components/APIkey'
 import SearchComponent from './components/SearchComponent'
 import ResultsComponent from './components/ResultsComponent';
 import InfoModal from './components/InfoModal';
-
 
 function App() {
     return (

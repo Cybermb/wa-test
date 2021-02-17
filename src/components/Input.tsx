@@ -1,10 +1,9 @@
 /** @jsxRuntime classic */
 /** @jsx jsx */
 import { jsx } from '@emotion/react'
-import React from 'react'
 import Styles from '../Styles'
 
-export default function APIkey(props:any) {
+export default function Input(props:any) {
     return (
         <input css={Styles.input} {...props}/>
     )

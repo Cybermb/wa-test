@@ -6,7 +6,7 @@ import Button from './Button'
 import loadingPNG from '../loading.png'
 import { useDispatch, useSelector } from 'react-redux'
 
-const InfoModal = (props:any) => {
+const InfoModal = () => {
     const modalInfoID = useSelector((state:any) => state.modalInfoID)
     const specificInfo = useSelector((state:any) => state.specificInfo)
     const info = specificInfo[modalInfoID]
